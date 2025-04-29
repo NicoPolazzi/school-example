@@ -10,7 +10,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.release>17</maven.compiler.release>
+    <maven.compiler.release>21</maven.compiler.release>
     <testcontainers.version>1.20.4</testcontainers.version>
   </properties>
 
@@ -23,10 +23,10 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <version>5.11.4</version>
-            <scope>test</scope>
+        <groupId>org.junit.vintage</groupId>
+        <artifactId>junit-vintage-engine</artifactId>
+        <version>5.11.4</version>
+        <scope>test</scope>
         </dependency>
     <dependency>
         <groupId>org.mockito</groupId>
