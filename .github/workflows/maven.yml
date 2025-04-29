@@ -9,17 +9,14 @@ jobs:
         runs-on: ubuntu-latest
         env:
             workdir: school
-        strategy:
-            matrix:
-                java: [17,21]
                 
-        name: Build with Java ${{matrix.java}} on Linux
+        name: Build with Java 17 on Linux
         steps:
         - uses: actions/checkout@v4
-        - name: Set up JDK ${{matrix.java}}
+        - name: Set up JDK 17
           uses: actions/setup-java@v4
           with:
-            java-version: ${{matrix.java}}
+            java-version: 17
             distribution: 'temurin'
         - name: Cache Maven packages
           uses: actions/cache@v4
