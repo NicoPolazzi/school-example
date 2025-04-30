@@ -19,14 +19,13 @@ public class StudentMongoRepository implements StudentRepository {
     private MongoCollection<Document> studentCollection;
 
     public StudentMongoRepository(MongoClient client) {
-	studentCollection = client.getDatabase(SCHOOL_DB_NAME)
-		.getCollection(SCHOOL_COLLECTION_NAME);
+	studentCollection = client.getDatabase(SCHOOL_DB_NAME).getCollection(SCHOOL_COLLECTION_NAME);
     }
 
     @Override
     public List<Student> findAll() {
-	return StreamSupport.stream(studentCollection.find().spliterator(), false)
-		.map(this::fromDocumentToStudent).collect(Collectors.toList());
+	return StreamSupport.stream(studentCollection.find().spliterator(), false).map(this::fromDocumentToStudent)
+		.collect(Collectors.toList());
     }
 
     @Override
@@ -44,14 +43,12 @@ public class StudentMongoRepository implements StudentRepository {
 
     @Override
     public void save(Student student) {
-	// TODO Auto-generated method stub
-
+	studentCollection.insertOne(new Document().append("id", student.getId()).append("name", student.getName()));
     }
 
     @Override
     public void delete(String id) {
-	// TODO Auto-generated method stub
-
+	studentCollection.deleteOne(Filters.eq("id", id));
     }
 
 }
