@@ -1,6 +1,5 @@
 package com.examples.school.view.swing;
 
-import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -17,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import com.examples.school.controller.SchoolController;
@@ -39,20 +39,6 @@ public class StudentSwingView extends JFrame implements StudentView {
     private DefaultListModel<Student> listStudentsModel;
     private SchoolController schoolController;
 
-    /**
-     * Launch the application.
-     */
-    public static void main(String[] args) {
-	EventQueue.invokeLater(() -> {
-	    try {
-		StudentSwingView frame = new StudentSwingView();
-		frame.setVisible(true);
-	    } catch (Exception e) {
-		e.printStackTrace();
-	    }
-	});
-    }
-
     // Used for testing purpose
     DefaultListModel<Student> getListStudentsModel() {
 	return listStudentsModel;
@@ -63,7 +49,7 @@ public class StudentSwingView extends JFrame implements StudentView {
      */
     public StudentSwingView() {
 
-	setTitle("Student View\n");
+	setTitle("Student View");
 	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	setBounds(100, 100, 926, 629);
 	contentPane = new JPanel();
@@ -112,7 +98,10 @@ public class StudentSwingView extends JFrame implements StudentView {
 
 	btnAdd = new JButton("Add");
 	btnAdd.setEnabled(false);
-	btnAdd.addActionListener(e -> schoolController.newStudent(new Student(txtId.getText(), txtName.getText())));
+	btnAdd.addActionListener(e -> new Thread(() -> {
+	    schoolController.newStudent(new Student(txtId.getText(), txtName.getText()));
+	}).start());
+
 	txtId.addKeyListener(btnAddEnabler);
 	txtName = new JTextField();
 	txtName.addKeyListener(btnAddEnabler);
@@ -149,7 +138,10 @@ public class StudentSwingView extends JFrame implements StudentView {
 	listStudents.setName("studentList");
 
 	btnDeleteSelected = new JButton("Delete Selected");
-	btnDeleteSelected.addActionListener(e -> schoolController.deleteStudent(listStudents.getSelectedValue()));
+	btnDeleteSelected.addActionListener(e -> new Thread(() -> {
+
+	    schoolController.deleteStudent(listStudents.getSelectedValue());
+	}).start());
 	btnDeleteSelected.setEnabled(false);
 	GridBagConstraints gbc_btnDeleteSelected = new GridBagConstraints();
 	gbc_btnDeleteSelected.insets = new Insets(0, 0, 5, 0);
@@ -170,25 +162,28 @@ public class StudentSwingView extends JFrame implements StudentView {
 
     @Override
     public void showAllStudents(List<Student> students) {
-	students.stream().forEach(listStudentsModel::addElement);
-
+	SwingUtilities.invokeLater(() -> students.stream().forEach(listStudentsModel::addElement));
     }
 
     @Override
     public void showError(String message, Student student) {
-	lblErrorMessage.setText(message + ": " + student);
+	SwingUtilities.invokeLater(() -> lblErrorMessage.setText(message + ": " + student));
     }
 
     @Override
     public void studentAdded(Student student) {
-	listStudentsModel.addElement(student);
-	resetErrorLabel();
+	SwingUtilities.invokeLater(() -> {
+	    listStudentsModel.addElement(student);
+	    resetErrorLabel();
+	});
     }
 
     @Override
     public void studentRemoved(Student student) {
-	listStudentsModel.removeElement(student);
-	resetErrorLabel();
+	SwingUtilities.invokeLater(() -> {
+	    listStudentsModel.removeElement(student);
+	    resetErrorLabel();
+	});
     }
 
     private void resetErrorLabel() {

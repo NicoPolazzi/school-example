@@ -69,6 +69,17 @@
         <version>${testcontainers.version}</version>
         <scope>test</scope>
     </dependency>
+    <dependency>
+        <groupId>org.awaitility</groupId>
+        <artifactId>awaitility</artifactId>
+        <version>4.0.2</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>info.picocli</groupId>
+        <artifactId>picocli</artifactId>
+        <version>4.7.6</version>
+</dependency>
   </dependencies>
 
   <build>
@@ -84,7 +95,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.13.0</version>
+          <version>3.14.0</version>
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
@@ -119,6 +130,7 @@
                     <configuration>
                         <sources>
                             <source>src/it/java</source>
+                            <source>src/e2e/java</source>                            
                         </sources>
                     </configuration>
                 </execution>
@@ -130,10 +142,48 @@
             <version>3.5.2</version>
             <executions>
                 <execution>
+                    <id>default-it</id>
                     <goals>
                         <goal>integration-test</goal>
                         <goal>verify</goal>
                     </goals>
+                </execution>
+                <execution>
+                    <id>e2e-tests</id>
+                    <goals>
+                        <goal>integration-test</goal>
+                        <goal>verify</goal>
+                    </goals>
+                    <configuration>
+                        <excludes>
+                            <exclude>**/*IT.java</exclude>
+                        </excludes>
+                        <includes>
+                            <include>**/*E2E.java</include>
+                        </includes>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>single</goal>
+                    </goals>
+                    <configuration>
+                        <descriptorRefs>
+                            <descriptorRef>jar-with-dependencies</descriptorRef>
+                        </descriptorRefs>
+                        <archive>
+                            <manifest>
+                                <mainClass>com.examples.school.app.swing.SchoolSwingApp</mainClass>
+                            </manifest>
+                        </archive>
+                    </configuration>
                 </execution>
             </executions>
         </plugin>

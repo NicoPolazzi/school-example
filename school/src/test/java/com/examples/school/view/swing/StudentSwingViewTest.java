@@ -23,10 +23,12 @@ import org.mockito.MockitoAnnotations;
 import com.examples.school.controller.SchoolController;
 import com.examples.school.model.Student;
 
+import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
 @RunWith(GUITestRunner.class)
 public class StudentSwingViewTest extends AssertJSwingJUnitTestCase {
+    private static final int TIMEOUT = 5000;
 
     @Mock
     private SchoolController schoolController;
@@ -106,7 +108,7 @@ public class StudentSwingViewTest extends AssertJSwingJUnitTestCase {
     public void testShowAllStudentsShouldAddStudentDescriptionsToTheList() {
 	Student student1 = new Student("1", "test1");
 	Student student2 = new Student("2", "test2");
-	GuiActionRunner.execute(() -> studentSwingView.showAllStudents(Arrays.asList(student1, student2)));
+	studentSwingView.showAllStudents(Arrays.asList(student1, student2));
 	String[] listContents = window.list().contents();
 	assertThat(listContents).containsExactly(student1.toString(), student2.toString());
     }
@@ -114,14 +116,14 @@ public class StudentSwingViewTest extends AssertJSwingJUnitTestCase {
     @Test
     public void testShowErrorShouldShowTheMessageInTheErrorLabel() {
 	var student = new Student("1", "test1");
-	GuiActionRunner.execute(() -> studentSwingView.showError("error message", student));
+	studentSwingView.showError("error message", student);
 	window.label("errorMessageLabel").requireText("error message: " + student);
     }
 
     @Test
     public void testStudentAddedShouldAddTheStudentToTheListAndResetTheErrorLabel() {
 	var student = new Student("1", "test1");
-	GuiActionRunner.execute(() -> studentSwingView.studentAdded(student));
+	studentSwingView.studentAdded(student);
 	String[] listContents = window.list().contents();
 	assertThat(listContents).containsExactly(student.toString());
 	window.label("errorMessageLabel").requireText(" ");
@@ -137,7 +139,7 @@ public class StudentSwingViewTest extends AssertJSwingJUnitTestCase {
 	    listStudentModel.addElement(student2);
 	});
 
-	GuiActionRunner.execute(() -> studentSwingView.studentRemoved(new Student("1", "test1")));
+	studentSwingView.studentRemoved(new Student("1", "test1"));
 
 	String[] listContents = window.list().contents();
 	assertThat(listContents).containsExactly(student2.toString());
@@ -149,7 +151,7 @@ public class StudentSwingViewTest extends AssertJSwingJUnitTestCase {
 	window.textBox("idTextBox").enterText("1");
 	window.textBox("nameTextBox").enterText("test");
 	window.button(JButtonMatcher.withText("Add")).click();
-	verify(schoolController).newStudent(new Student("1", "test"));
+	verify(schoolController, timeout(TIMEOUT)).newStudent(new Student("1", "test"));
     }
 
     @Test
@@ -164,7 +166,7 @@ public class StudentSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	window.list("studentList").selectItem(1);
 	window.button(JButtonMatcher.withText("Delete Selected")).click();
-	verify(schoolController).deleteStudent(student2);
+	verify(schoolController, timeout(TIMEOUT)).deleteStudent(student2);
 
     }
 }

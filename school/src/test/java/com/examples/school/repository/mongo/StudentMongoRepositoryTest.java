@@ -21,6 +21,8 @@ import de.bwaldvogel.mongo.MongoServer;
 import de.bwaldvogel.mongo.backend.memory.MemoryBackend;
 
 class StudentMongoRepositoryTest {
+    private static final String SCHOOL_DB_NAME = "school";
+    private static final String SCHOOL_COLLECTION_NAME = "student";
 
     private static MongoServer server;
     private static InetSocketAddress serverAddress;
@@ -37,10 +39,10 @@ class StudentMongoRepositoryTest {
     @BeforeEach
     void setup() {
 	client = new MongoClient(new ServerAddress(serverAddress));
-	studentRepository = new StudentMongoRepository(client);
-	MongoDatabase database = client.getDatabase(StudentMongoRepository.SCHOOL_DB_NAME);
+	studentRepository = new StudentMongoRepository(client, SCHOOL_DB_NAME, SCHOOL_COLLECTION_NAME);
+	MongoDatabase database = client.getDatabase(SCHOOL_DB_NAME);
 	database.drop();
-	studentCollection = database.getCollection(StudentMongoRepository.SCHOOL_COLLECTION_NAME);
+	studentCollection = database.getCollection(SCHOOL_COLLECTION_NAME);
     }
 
     @AfterEach
@@ -57,8 +59,7 @@ class StudentMongoRepositoryTest {
     void testFindAllWhenDatabaseIsNotEmpty() {
 	addTestStudentToDatabase("1", "test1");
 	addTestStudentToDatabase("2", "test2");
-	assertThat(studentRepository.findAll()).containsExactly(new Student("1", "test1"),
-		new Student("2", "test2"));
+	assertThat(studentRepository.findAll()).containsExactly(new Student("1", "test1"), new Student("2", "test2"));
 
     }
 
