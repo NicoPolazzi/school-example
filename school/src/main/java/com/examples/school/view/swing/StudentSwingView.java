@@ -17,6 +17,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
 import com.examples.school.controller.SchoolController;
@@ -37,7 +38,7 @@ public class StudentSwingView extends JFrame implements StudentView {
 
     private JList<Student> listStudents;
     private DefaultListModel<Student> listStudentsModel;
-    private SchoolController schoolController;
+    private transient SchoolController schoolController;
 
     // Used for testing purpose
     DefaultListModel<Student> getListStudentsModel() {
@@ -50,7 +51,7 @@ public class StudentSwingView extends JFrame implements StudentView {
     public StudentSwingView() {
 
 	setTitle("Student View");
-	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 	setBounds(100, 100, 926, 629);
 	contentPane = new JPanel();
 	contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -98,9 +99,9 @@ public class StudentSwingView extends JFrame implements StudentView {
 
 	btnAdd = new JButton("Add");
 	btnAdd.setEnabled(false);
-	btnAdd.addActionListener(e -> new Thread(() -> {
-	    schoolController.newStudent(new Student(txtId.getText(), txtName.getText()));
-	}).start());
+	btnAdd.addActionListener(
+		e -> new Thread(() -> schoolController.newStudent(new Student(txtId.getText(), txtName.getText())))
+			.start());
 
 	txtId.addKeyListener(btnAddEnabler);
 	txtName = new JTextField();
@@ -138,10 +139,8 @@ public class StudentSwingView extends JFrame implements StudentView {
 	listStudents.setName("studentList");
 
 	btnDeleteSelected = new JButton("Delete Selected");
-	btnDeleteSelected.addActionListener(e -> new Thread(() -> {
-
-	    schoolController.deleteStudent(listStudents.getSelectedValue());
-	}).start());
+	btnDeleteSelected.addActionListener(
+		e -> new Thread(() -> schoolController.deleteStudent(listStudents.getSelectedValue())).start());
 	btnDeleteSelected.setEnabled(false);
 	GridBagConstraints gbc_btnDeleteSelected = new GridBagConstraints();
 	gbc_btnDeleteSelected.insets = new Insets(0, 0, 5, 0);

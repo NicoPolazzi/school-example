@@ -24,7 +24,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.model.Filters;
 
 @RunWith(GUITestRunner.class)
-public class SchoolSwingAppE2E extends AssertJSwingJUnitTestCase {
+public class SchoolSwingAppE2E extends AssertJSwingJUnitTestCase { // NOSONAR I want the name this way
 
     private static final String STUDENT_FIXTURE_1_ID = "1";
     private static final String STUDENT_FIXTURE_1_NAME = "first student";

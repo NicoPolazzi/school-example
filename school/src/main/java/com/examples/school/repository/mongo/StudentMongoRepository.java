@@ -1,7 +1,6 @@
 package com.examples.school.repository.mongo;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.bson.Document;
@@ -23,7 +22,7 @@ public class StudentMongoRepository implements StudentRepository {
     @Override
     public List<Student> findAll() {
 	return StreamSupport.stream(studentCollection.find().spliterator(), false).map(this::fromDocumentToStudent)
-		.collect(Collectors.toList());
+		.toList();
     }
 
     @Override

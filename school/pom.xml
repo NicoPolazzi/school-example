@@ -12,6 +12,41 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.release>17</maven.compiler.release>
     <testcontainers.version>1.20.4</testcontainers.version>
+    
+    <sonar.host.url>http://localhost:9000</sonar.host.url>
+    <sonar.issue.ignore.multicriteria>e11,e12</sonar.issue.ignore.multicriteria>
+    
+    <sonar.issue.ignore.multicriteria.e11.ruleKey>
+        java:S117
+    </sonar.issue.ignore.multicriteria.e11.ruleKey>
+    <sonar.issue.ignore.multicriteria.e11.resourceKey>
+        **/StudentSwingView.java
+    </sonar.issue.ignore.multicriteria.e11.resourceKey>
+    
+    <!-- Disable rule for "Tests should include assertions":
+    SonarQube is not aware of AssertJ Swing -->
+    <sonar.issue.ignore.multicriteria.e12.ruleKey>
+        java:S2699
+    </sonar.issue.ignore.multicriteria.e12.ruleKey>
+    <sonar.issue.ignore.multicriteria.e12.resourceKey>
+        **/StudentSwingViewTest.java
+    </sonar.issue.ignore.multicriteria.e12.resourceKey>
+    
+    <sonar.tests>
+        ${project.basedir}/src/test/java,
+        ${project.basedir}/src/it/java,
+        ${project.basedir}/src/e2e/java        
+    </sonar.tests>
+    
+    <sonar.junit.reportPaths>
+        ${project.build.directory}/surefire-reports,
+        ${project.build.directory}/failsafe-reports
+    </sonar.junit.reportPaths>
+    
+    <sonar.coverage.exclusions>
+        **/model/*.*,
+        **/SchoolSwingApp.*
+    </sonar.coverage.exclusions>
   </properties>
 
 
@@ -113,6 +148,11 @@
           <artifactId>maven-deploy-plugin</artifactId>
           <version>3.1.2</version>
         </plugin>
+        <plugin>
+            <groupId>org.sonarsource.scanner.maven</groupId>
+            <artifactId>sonar-maven-plugin</artifactId>
+            <version>5.0.0.4389</version>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -204,6 +244,32 @@
                             <exclude>**/*TestcontainersIT.java</exclude>
                         </excludes>
                     </configuration>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+    <profile>
+        <id>jacoco</id>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>0.8.13</version>
+                    <configuration>
+                        <excludes>
+                            <exclude>**/model/*.*</exclude>                        
+                            <exclude>**/SchoolSwingApp.*</exclude>                        
+                        </excludes>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>prepare-agent</goal>
+                                <goal>report</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </build>
